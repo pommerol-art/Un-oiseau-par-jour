@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Un oiseau par jour – Belgique</title>
+<style>
+:root{--bg:#f4f1e8;--card:#fff;--tx:#1f2a1f;--mu:#5d6b5d;--ac:#2f6b3f;--ln:#e1dccb;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141a14;--card:#1e271e;--tx:#e9efe6;--mu:#9fb09f;--ac:#7fc48f;--ln:#2e3a2e}}
+:root[data-theme="dark"]{--bg:#141a14;--card:#1e271e;--tx:#e9efe6;--mu:#9fb09f;--ac:#7fc48f;--ln:#2e3a2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin:0 0 12px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;overflow:hidden;margin-bottom:14px}
+.hero{height:170px;display:flex;align-items:center;justify-content:center;font-size:84px}
+.in{padding:16px}
+h2{margin:0;font-size:26px}
+.la{font-style:italic;color:var(--mu);margin:2px 0 10px}
+.tag{display:inline-block;background:var(--bg);border:1px solid var(--ln);border-radius:99px;padding:2px 10px;font-size:13px;margin:0 6px 6px 0}
+dl{margin:8px 0}dt{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mu);margin-top:10px}dd{margin:2px 0 0}
+.fun{background:var(--bg);border-radius:12px;padding:10px 12px;margin-top:12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+button,a.b{font:inherit;border:1px solid var(--ac);background:var(--ac);color:#fff;border-radius:10px;padding:10px 14px;text-decoration:none;cursor:pointer}
+button.o,a.o{background:transparent;color:var(--ac)}
+.list{max-height:260px;overflow-y:auto}
+.item{display:flex;justify-content:space-between;padding:8px 16px;border-top:1px solid var(--ln);cursor:pointer}
+.item small{color:var(--mu);font-style:italic}
+.opt{display:block;width:100%;text-align:left;margin-top:8px;background:transparent;color:var(--tx);border-color:var(--ln)}.opt.ok{background:#2f6b3f;color:#fff;border-color:#2f6b3f}.opt.ko{background:#b3402f;color:#fff;border-color:#b3402f}#fb{margin-top:10px}.grp{font-weight:600;margin:16px 16px 4px;color:var(--ac)}.sp{display:flex;justify-content:space-between;gap:8px;padding:6px 16px;border-top:1px solid var(--ln)}.sp small{color:var(--mu)}.sp a{color:var(--tx);text-decoration:none;border-bottom:1px dotted var(--mu)}.sp[data-i]{cursor:pointer}button.o{background:transparent;color:var(--ac)}
+</style>
+</head>
+<body>
+<main>
+<h1 id="date"></h1>
+<div class='row' style='margin:0 0 12px'><button id='tb'>Oiseau du jour</button><button class='o' id='tq'>Quiz</button><button class='o' id='tc'>Catalogue</button></div><div class='card' id='bird'></div><div class='card' id='quiz' style='display:none'></div><div class='card' id='cat' style='display:none'></div>
+<div class="card"><div class="in"><b id="prog"></b></div><div class="list" id="list"></div></div>
+</main>
+<script>
+var B=[
+["Rougegorge familier","Erithacus rubecula","Muscicapidés","🐦","#e8a15c","12,5–14 cm · 14–21 g","Sous-bois, haies, jardins","Insectes, vers, baies en hiver","Phrase mélodieuse et cristalline, chantée même en hiver et à la tombée de la nuit","Très commun, sédentaire (partiellement migrateur)","Mâles et femelles défendent chacun un territoire hivernal, d’où son chant en plein hiver."],
+["Mésange bleue","Cyanistes caeruleus","Paridés","🐤","#6fa8dc","11–12 cm · 9–12 g","Forêts de feuillus, parcs, jardins","Insectes, chenilles, graines","Trille aigu « tsi-tsi-tsiiii »","Très commune, sédentaire","Elle voit les ultraviolets : son bonnet bleu brille pour ses congénères."],
+["Mésange charbonnière","Parus major","Paridés","🐥","#d9c43b","14 cm · 16–21 g","Bois, parcs, jardins","Insectes, graines, noix","Chant bisyllabique « ti-tou ti-tou » ; plus de 40 cris différents","Très commune, sédentaire","Elle se nourrit de chenilles processionnaires et peut vider un nichoir de chenilles en une saison."],
+["Merle noir","Turdus merula","Turdidés","🐦‍⬛","#3a3a3a","24–27 cm · 80–125 g","Jardins, bois, parcs urbains","Vers de terre, fruits, insectes","Flûté, mélodieux, souvent au crépuscule","Très commun, sédentaire","Le mâle est noir à bec orange ; la femelle est brune."],
+["Pinson des arbres","Fringilla coelebs","Fringillidés","🐦","#b86f50","14–16 cm · 18–29 g","Forêts, haies, jardins","Graines, insectes en période de nid","Chant descendant terminé par un jet vif","Très commun, nicheur et hivernant","Un des oiseaux les plus abondants d’Europe : plusieurs dizaines de millions de couples."],
+["Moineau domestique","Passer domesticus","Passéridés","🐦","#a38b6d","14–16 cm · 25–35 g","Villes, villages, fermes","Graines, miettes, insectes","Piaillements répétés « chip-chip »","Commun mais en déclin","Il vit toujours près de l’homme, et ses effectifs ont fortement chuté en ville."],
+["Pic épeiche","Dendrocopos major","Picidés","🪶","#c0392b","22–23 cm · 70–90 g","Forêts, parcs, jardins","Insectes, graines de conifères, noisettes","Cri sec « kik » et tambourinage rapide sur le bois","Commun, sédentaire","Il coince des cônes dans une « forge » pour les décortiquer."],
+["Martin-pêcheur d’Europe","Alcedo atthis","Alcédinidés","💎","#1fa3c4","16–17 cm · 35–45 g","Rivières, étangs, canaux à eaux claires","Petits poissons, insectes aquatiques","Sifflement aigu « tsiiih » en vol","Rare à assez commun, sédentaire","Il plonge à plus de 40 km/h et niche dans un terrier creusé dans une berge."],
+["Héron cendré","Ardea cinerea","Ardéidés","🦢","#8a9bb0","90–98 cm · 1–2 kg","Étangs, rivières, prairies humides","Poissons, amphibiens, petits mammifères","Cri rauque « kraaank »","Commun, sédentaire","Il niche en colonies (héronnières) dans de hauts arbres."],
+["Cigogne blanche","Ciconia ciconia","Ciconiidés","🦩","#e04b4b","100–115 cm · 2,5–4 kg","Prairies humides, vallées","Grenouilles, insectes, micromammifères","Silencieuse : claquette son bec","Rare mais en progression","Envergure de près de 2 m ; elle revient en Belgique depuis les années 2000."],
+["Buse variable","Buteo buteo","Accipitridés","🦅","#7d5a3c","51–57 cm · 0,5–1,3 kg","Lisières, campagne ouverte","Campagnols, lapereaux, vers, insectes","Miaulement perçant « hiiièh »","Commune, sédentaire","On la voit souvent en vol plané sur les courants chauds ou perchée sur un poteau."],
+["Faucon crécerelle","Falco tinnunculus","Falconidés","🦅","#c97b3a","32–39 cm · 150–250 g","Campagne, bords d’autoroutes, villes","Campagnols, insectes","Cri aigu répété « kli-kli-kli »","Commun, sédentaire","Il pratique le vol du Saint-Esprit : un surplace pour repérer ses proies."],
+["Chouette hulotte","Strix aluco","Strigidés","🦉","#8d6e53","37–43 cm · 330–590 g","Forêts, parcs, vieux arbres","Rongeurs, oiseaux, vers","Le « hou-hou » du mâle et le « kou-ouik » de la femelle","Commune, sédentaire","C’est la chouette qui hulule dans les films ; elle vole presque sans bruit."],
+["Hirondelle rustique","Hirundo rustica","Hirundinidés","🕊️","#2c4a7c","17–19 cm · 16–22 g","Campagne, fermes, étables","Insectes capturés en vol","Gazouillis rapide et joyeux","Nicheuse migratrice (avril–octobre)","Elle hiverne en Afrique australe, à plus de 10 000 km."],
+["Martinet noir","Apus apus","Apodidés","✈️","#2a2a2a","16–17 cm · 36–50 g","Villes, villages, vieux bâtiments","Insectes aériens","Cris stridents « sriiiii » en groupe","Nicheur migrateur (mai–août)","Il peut passer presque toute sa vie en vol, y compris dormir."],
+["Troglodyte mignon","Troglodytes troglodytes","Troglodytidés","🐦","#a0643a","9–10 cm · 8–11 g","Buissons denses, sous-bois, jardins","Insectes, araignées","Chant d’une puissance étonnante pour sa taille","Très commun, sédentaire","Parmi les plus petits oiseaux de Belgique, il porte la queue dressée."],
+["Geai des chênes","Garrulus glandarius","Corvidés","🪶","#c98a6e","32–35 cm · 140–190 g","Chênaies, forêts mixtes","Glands, noisettes, insectes, œufs","Cri rauque « skrèèh »","Commun, sédentaire","Il cache des milliers de glands et contribue à replanter les chênes."],
+["Pie bavarde","Pica pica","Corvidés","🐦‍⬛","#1d1d1d","44–46 cm · 200–250 g","Campagne, villes, haies","Insectes, graines, œufs","Caquètement saccadé « chak-chak-chak »","Commune, sédentaire","Elle réussit le test du miroir, signe d’une grande intelligence."],
+["Cygne tuberculé","Cygnus olor","Anatidés","🦢","#e8eef2","125–155 cm · 8–12 kg","Étangs, lacs, rivières","Plantes aquatiques","Souffle ou sifflement ; ses ailes ronflent en vol","Commun, sédentaire","Un des plus lourds oiseaux volants d’Europe."],
+["Canard colvert","Anas platyrhynchos","Anatidés","🦆","#3f7f4f","50–65 cm · 0,9–1,3 kg","Étangs, rivières, canaux","Plantes, graines, invertébrés","Le coin-coin est celui de la femelle","Très commun, sédentaire","Ancêtre de la plupart des canards domestiques."],
+["Grue cendrée","Grus grus","Gruidés","🦩","#8f9aa4","110–120 cm · 4–7 kg","Zones humides, champs (en migration)","Grains, plantes, insectes","Trompettement sonore et puissant","Migratrice de passage, nicheuse très rare","Elles migrent en V en laissant entendre leurs cris de très loin."],
+["Bergeronnette grise","Motacilla alba","Motacillidés","🐦","#9aa5ad","18 cm · 20–25 g","Parkings, berges, campagnes","Insectes","Cri « tsilip » en vol","Commune, nicheuse et migratrice partielle","Elle hoche la queue sans cesse en marchant."],
+["Sittelle torchepot","Sitta europaea","Sittidés","🐦","#5f8ea8","13–14 cm · 20–25 g","Vieux bois de feuillus, parcs","Insectes, graines, noisettes","Sifflements clairs répétés","Assez commune, sédentaire","Seul oiseau capable de descendre un tronc la tête en bas."],
+["Chardonneret élégant","Carduelis carduelis","Fringillidés","🌈","#d94e4e","12–13 cm · 14–19 g","Jardins, vergers, friches","Graines de chardons et de composées","Gazouillis liquide « tiguelit »","Commun, sédentaire en partie","Son masque rouge lui vaut aussi le nom de « diable de bois »."],
+["Grand cormoran","Phalacrocorax carbo","Phalacrocoracidés","🦅","#262c33","80–100 cm · 2–3 kg","Rivières, lacs, côtes","Poissons","Grognements rauques à la colonie","Commun, sédentaire et hivernant","Il plonge sous l’eau et sèche ensuite ses ailes à la verticale."],
+["Bernache du Canada","Branta canadensis","Anatidés","🦢","#6b5b4a","90–110 cm · 3–6 kg","Étangs, pelouses, bords de lacs","Herbe, graines","Cri sonore « a-honk »","Commune (espèce introduite)","Originaire d’Amérique du Nord, elle s’est installée en Europe."],
+['Coucou gris','Cuculus canorus','Cuculidés','🐦','#8a97a3','32–34 cm · 105–130 g','Lisières, roselières, campagne','Chenilles, insectes','Le « cou-cou » du mâle','Migrateur nicheur (avril–août)','La femelle pond dans le nid d’autres espèces.'],
+['Rossignol philomèle','Luscinia megarhynchos','Muscicapidés','🎶','#9c6f4a','16–17 cm · 20–27 g','Fourrés denses, bois humides','Insectes, baies','Chant puissant, de jour comme de nuit','Migrateur nicheur (avril–août)','Le mâle chante la nuit pour attirer les femelles.'],
+['Fauvette à tête noire','Sylvia atricapilla','Sylviidés','🐦','#6d7378','13 cm · 16–20 g','Bois, parcs, jardins','Insectes puis baies','Gazouillis flûté et mélodieux','Migrateur nicheur, certains hivernent','Des fauvettes d’Europe centrale viennent hiverner chez nous.'],
+['Pouillot véloce','Phylloscopus collybita','Phylloscopidés','🐥','#8f9b5a','10–11 cm · 6–9 g','Bois, parcs, jardins','Insectes','« tsip-tsap » répété','Migrateur de passage et nicheur (mars–octobre)','Son chant annonce le retour du printemps.'],
+['Bondrée apivore','Pernis apivorus','Accipitridés','🦅','#8a6a48','52–59 cm · 600–1 000 g','Forêts, lisières','Guêpes, bourdons, larves','Cri aigu « pi-ou »','Migrateur nicheur rare (mai–août)','Elle détruit les guêpiers pour manger les larves.'],
+['Cigogne noire','Ciconia nigra','Ciconiidés','🦩','#2a3a30','95–100 cm · 2,5–3 kg','Forêts humides, rivières','Poissons, amphibiens','Presque silencieuse','Migratrice de passage, nicheuse très rare','Discrète, elle niche dans les grands bois d’Ardenne.'],
+['Oie cendrée','Anser anser','Anatidés','🦆','#9a8c7c','76–89 cm · 3–4 kg','Marais, prairies humides, étangs','Herbes, céréales','Cacardement sonore','Migratrice de passage et hivernante','Ancêtre de l’oie domestique.'],
+['Vanneau huppé','Vanellus vanellus','Charadriidés','🕊️','#2d4a3a','28–31 cm · 150–300 g','Prairies, champs labourés','Vers, insectes','Cri « pi-ouit »','Migrateur de passage, hivernant, nicheur rare','Sa huppe et ses ailes arrondies le font reconnaître en vol.'],
+['Étourneau sansonnet','Sturnus vulgaris','Sturnidés','🐦‍⬛','#3a3a52','19–23 cm · 70–90 g','Campagne, villes, prairies','Insectes, fruits','Imite d’autres oiseaux','Commun, migrateur et hivernant','Ses nuées dessinent de grandes formes dans le ciel (murmurations).'],
+['Grive litorne','Turdus pilaris','Turdidés','🐦','#8a7a6a','25–27 cm · 90–140 g','Prairies, vergers, haies','Vers, baies','Cri rauque « chak-chak »','Hivernante, migratrice de passage','Elle arrive du nord par bandes en hiver pour les baies.']
+];
+var X=[
+['Face et poitrine orange, ventre blanc, dos brun olive ; sexes semblables.','Nid dans une cavité ou un talus ; 4–6 œufs, 2 nichées dès avril.','Sédentaire, rejoint par des hivernants du nord.','Partout : jardins, forêts de Wallonie et de Flandre.','Vit 2–3 ans, record 8 ans ; préoccupation mineure.','Rougequeue noir (queue rousse, plumage sombre).'],
+['Calotte, ailes et queue bleues, joues blanches, ventre jaune.','Nid dans un trou ou nichoir ; 8–12 œufs en avril–mai.','Sédentaire, erratique l’hiver.','Jardins, boisements de feuillus, mangeoires.','Vit 2–3 ans, record 10 ans ; préoccupation mineure.','Mésange nonnette (aucun bleu).'],
+['Tête noire, joues blanches, ventre jaune coupé d’une cravate noire.','Cavité ou nichoir ; 6–12 œufs, 1–2 nichées dès avril.','Sédentaire ; des individus du nord hivernent.','Jardins, parcs, forêts.','Vit 2–3 ans, record 15 ans ; préoccupation mineure.','Mésange noire (nuque blanche, dos gris).'],
+['Mâle noir à bec orange ; femelle brun foncé.','Nid en coupe de boue et d’herbes ; 3–5 œufs, 2–3 nichées.','Sédentaire, hivernants nordiques nombreux.','Pelouses, jardins, parcs, lisières.','Vit 3–4 ans, record 20 ans ; préoccupation mineure.','Étourneau sansonnet (taches claires, bec jaune).'],
+['Mâle à joues roses et calotte gris-bleu ; double barre alaire blanche.','Nid en coupe moussue dans une fourche ; 4–5 œufs.','Migrateur partiel : de grands groupes passent en octobre.','Forêts, haies, jardins, champs en hiver.','Vit 2–3 ans, record 14 ans ; préoccupation mineure.','Pinson du Nord (poitrine orange, dos noir).'],
+['Mâle : calotte grise, bavette noire ; femelle brun-gris terne.','Nid dans les toits ou nichoirs ; 3–5 œufs, 2–3 nichées.','Très sédentaire.','Villages, fermes, centres-villes, mangeoires.','Vit 3–4 ans, record 13 ans ; déclin local.','Moineau friquet (calotte brune, tache joue).'],
+['Noir et blanc, épaulettes blanches, sous-caudales rouges ; mâle à nuque rouge.','Creuse son nid dans un tronc ; 4–7 œufs.','Sédentaire, parfois invasions du nord.','Forêts, bosquets, mangeoires à graisse.','Vit 4–5 ans, record 11 ans ; préoccupation mineure.','Pic mar (calotte rouge entière).'],
+['Dos bleu turquoise, ventre orange, gorge blanche, bec long.','Terrier de 50–90 cm dans une berge ; 6–7 œufs, 2–3 nichées.','Sédentaire mais frappé par les hivers rigoureux.','Rivières et canaux clairs : Semois, Lesse, Ourthe.','Vit 2–3 ans, record 21 ans ; rare, Natura 2000.','Mésange bleue, plus petite et jamais près de l’eau.'],
+['Grand oiseau gris, cou en S, bandeau noir, bec jaune.','Colonie dans de hauts arbres ; 3–5 œufs dès février.','Sédentaire, partiellement migrateur.','Étangs, rivières, prés humides.','Vit 5 ans, record 25 ans ; préoccupation mineure.','Grue cendrée (vole le cou tendu).'],
+['Plumage blanc, ailes noires, bec et pattes rouges.','Gros nid de branches sur un toit ou poteau ; 3–5 œufs.','Migratrice vers l’Afrique, de retour en mars.','Vallées humides : Hesbaye, Campine, Flandre.','Vit 15–20 ans ; population en hausse.','Cigogne noire (forêts, plumage sombre).'],
+['Brun très variable, queue barrée, ailes larges.','Nid de branches en forêt ; 2–3 œufs dès mars.','Sédentaire, hivernants du nord.','Campagne boisée, bords d’autoroutes, Ardenne.','Vit 7 ans, record 25 ans ; rapace le plus commun.','Bondrée apivore (tête fine, queue longue).'],
+['Mâle à tête grise, dos roux moucheté, queue grise barrée.','Nid dans une cavité ou un vieux nid de corneille ; 4–6 œufs.','Sédentaire, erratique l’hiver.','Champs, bords de routes, clochers, villes.','Vit 4 ans, record 16 ans ; préoccupation mineure.','Faucon émerillon (plus petit, trapu).'],
+['Brun-gris roussâtre, grosse tête ronde, yeux noirs.','Nid dans un tronc creux ; 2–4 œufs dès février.','Très sédentaire, fidèle à son territoire.','Forêts, vieux parcs, cimetières.','Vit 5 ans, record 20 ans ; préoccupation mineure.','Effraie des clochers (blanche, visage en cœur).'],
+['Dessus bleu nuit, front et gorge rouges, ventre blanc.','Nid de boue sous un toit d’étable ; 4–5 œufs, 2 nichées.','Migratrice vers l’Afrique australe, de retour en avril.','Campagne, fermes, plans d’eau.','Vit 3–4 ans, record 16 ans ; déclin des insectes inquiétant.','Hirondelle de fenêtre (croupion blanc).'],
+['Noir fuligineux, gorge pâle, ailes en faux.','Nid sous un toit ou dans un trou ; 2–3 œufs en mai.','Arrive début mai, repart dès fin juillet.','Au-dessus des villes en soirée d’été.','Vit 5 ans, record 21 ans ; déclin lié aux rénovations.','Hirondelle rustique (queue plus longue).'],
+['Minuscule, brun roux rayé, sourcil clair, queue dressée.','Nid en boule de mousse ; 5–6 œufs ; le mâle en construit plusieurs.','Sédentaire, très sensible au froid.','Sous-bois, tas de bois, jardins sauvages.','Vit 2 ans, record 7 ans ; préoccupation mineure.','Roitelet huppé (tache jaune sur la tête).'],
+['Corps rose-brun, tache bleue et noire sur l’aile, croupion blanc.','Nid de brindilles en forêt ; 5–6 œufs.','Sédentaire, invasions d’automne.','Chênaies, hêtraies, parcs.','Vit 5 ans, record 16 ans ; préoccupation mineure.','Pie-grièche écorcheur (plus petite, masque noir).'],
+['Noir et blanc, reflets bleus et verts, longue queue.','Gros nid fermé de branches ; 5–6 œufs dès mars.','Sédentaire.','Campagne, périphéries urbaines, prés.','Vit 5 ans, record 21 ans ; préoccupation mineure.','Corneille noire (entièrement noire).'],
+['Blanc pur, bec orange à bosse noire, cou en S.','Gros nid au bord de l’eau ; 5–7 œufs en avril.','Sédentaire, hiverne sur les eaux libres.','Étangs de parcs, canaux, Meuse.','Vit 10–12 ans, record 28 ans ; préoccupation mineure.','Cygne de Bewick (plus petit, bec jaune).'],
+['Mâle à tête vert brillant, collier blanc ; femelle brune.','Nid au sol près de l’eau ; 9–13 œufs en mars–avril.','Sédentaire, renforcé en hiver.','Tous les plans d’eau, mares, canaux.','Vit 3–4 ans, record 29 ans ; préoccupation mineure.','Canard chipeau (plus gris, miroir blanc).'],
+['Gris cendré, tête noire et blanche, tache rouge sur le crâne.','Nid dans des marais ; 2 œufs, nicheuse très rare en Belgique.','Passages massifs en octobre–novembre et février–mars.','Ciels de Hesbaye et de Campine en migration.','Vit 20 ans, record 40 ans ; population en hausse.','Héron cendré (cou replié en vol).'],
+['Gris, blanc et noir, museau fin, longue queue.','Nid dans un trou de mur ; 5–6 œufs, 2 nichées.','Migratrice partielle vers le sud.','Parkings, toits, berges, champs labourés.','Vit 2–3 ans, record 12 ans ; préoccupation mineure.','Bergeronnette des ruisseaux (ventre jaune).'],
+['Dos bleu-gris, ventre roux crème, masque noir.','Maçonne l’entrée d’un trou de tronc ; 6–9 œufs en avril.','Très sédentaire.','Vieilles forêts de feuillus, parcs.','Vit 4 ans, record 12 ans ; préoccupation mineure.','Grimpereau des jardins (bec courbe).'],
+['Masque rouge, joues blanches, calotte noire, ailes noires et jaunes.','Nid en coupe dans une fourche haute ; 4–6 œufs, 2 nichées.','Migrateur partiel, certains hivernent en Espagne.','Friches à chardons, vergers, jardins.','Vit 3 ans, record 14 ans ; préoccupation mineure.','Tarin des aulnes (plus petit, verdâtre).'],
+['Noir à reflets bronzés, joues blanches, bec crochu.','Colonie dans des arbres ou au sol ; 3–4 œufs dès mars.','Sédentaire, migrateurs en automne.','Lacs, rivières, canaux, Zwin, côte.','Vit 5–8 ans, record 23 ans ; autrefois persécuté.','Cormoran huppé (plus petit, côtier).'],
+['Corps brun, cou noir, joues blanches.','Nid au sol ou sur îlot ; 4–7 œufs en mars–avril.','Sédentaire, grands groupes l’hiver.','Parcs, étangs, golfs, bords de rivières.','Vit 10 ans, record 24 ans ; espèce exotique envahissante.','Bernache nonnette (visage blanc, ventre blanc).'],
+['Gris brun, dessous barré, bec fin ; sexes semblables.','Parasite de nid : 1 œuf par nid d’espèces hôtes.','Arrive en avril, repart en juillet–août vers l’Afrique.','Roselières, lisières, campagne.','Vit 6 ans, record 21 ans ; en déclin.','Épervier d’Europe (même silhouette, chant absent).'],
+['Brun roux uniforme, queue rousse, sourcil discret.','Nid au sol dans les fourrés ; 4–5 œufs en mai.','Arrive en avril, repart en août.','Bois humides, fourrés de Wallonie.','Vit 2 ans, record 8 ans ; rare.','Rossignol progné (plus gris, rare).'],
+['Mâle à calotte noire, femelle à calotte brune ; gris olive.','Nid en coupe dans les ronces ; 4–5 œufs en mai.','Arrive en avril ; hivernage possible dans les jardins.','Jardins, bois, haies.','Vit 2–3 ans, record 13 ans ; préoccupation mineure.','Fauvette des jardins (aucun trait marqué).'],
+['Gris-vert, sourcil clair, pattes sombres, très petit.','Nid de mousse au sol ; 5–6 œufs en avril.','Arrive en mars, repart en octobre.','Bois, jardins, bords de rivières.','Vit 2 ans, record 7 ans ; préoccupation mineure.','Pouillot fitis (pattes claires).'],
+['Brun foncé barré de blanc, queue barrée, tête grise.','Nid de brindilles en forêt ; 2 œufs en juin.','Arrive en mai, repart en septembre vers l’Afrique.','Forêts claires et lisières.','Vit 10 ans ; rare nicheuse.','Buse variable (gros corps, queue large).'],
+['Plumage noir irisé, ventre blanc, bec rouge, pattes rouges.','Nid dans un arbre ; 3–5 œufs en mai.','Arrive en avril, repart en août vers l’Afrique.','Ardenne, vallées forestières.','Vit 20 ans ; rare, protégée.','Cigogne blanche (plumage blanc).'],
+['Gris-brun, bec orange et pattes roses, queue courte.','Nid au sol ; 4–6 œufs en avril.','Passages d’octobre et de février–mars.','Polders, marais, prairies humides.','Vit 15 ans ; espèce en augmentation.','Oie rieuse (face blanche).'],
+['Dessus vert métallique, dessous blanc, huppe fine.','Nid au sol dans un champ ; 4 œufs en avril.','Migrateur d’octobre, hivernant en bandes.','Champs ouverts et prairies.','Vit 5 ans, record 20 ans ; en fort déclin.','Pluvier doré (sans huppe).'],
+['Noir iridescent moucheté de blanc en hiver, bec jaune.','Nid dans une cavité ; 4–7 œufs en avril.','Migrateur en octobre, grands rassemblements.','Villes, prairies, vignobles.','Vit 2–3 ans, record 20 ans ; en baisse.','Merle noir (bec orange, pas de taches).'],
+['Tête grise, dos brun roux, poitrine rousse moucheté.','Nid en coupe dans un arbre ; 5–6 œufs.','Arrive en octobre, repart en mars.','Prairies, vergers, haies.','Vit 4 ans, record 18 ans ; préoccupation mineure.','Grive mauvis (flancs roux, sourcil blanc).']
+];var DAY=864e5,start=Math.floor(Date.UTC(2026,0,1)/DAY),state={};
+function today(){var d=new Date();return Math.floor(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/DAY)}
+function idx(day){return ((day-start)%B.length+B.length)%B.length}
+var seen={};try{seen=JSON.parse(localStorage.getItem("seen")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("seen",JSON.stringify(seen))}catch(e){}}
+var cur=today();
+function row(t,v){return "<dt>"+t+"</dt><dd>"+v+"</dd>"}
+function show(day){
+cur=day;tab(0);var i=idx(day),b=B[i],x=X[i],L=['Description','Nid et reproduction','Déplacements','Où l’observer en Belgique','Longévité et statut','À ne pas confondre avec'];seen[i]=1;save();
+var dt=new Date(day*DAY);
+document.getElementById("date").textContent=(day===today()?"Oiseau du jour · ":"")+dt.toLocaleDateString("fr-BE",{weekday:"long",day:"numeric",month:"long",timeZone:"UTC"});
+document.getElementById("bird").innerHTML=
+'<div class="hero" style="background:'+b[4]+'33">'+b[3]+'</div><div class="in"><h2>'+b[0]+'</h2><div class="la">'+b[1]+'</div><span class="tag">'+b[2]+'</span><span class="tag">'+b[9]+'</span><dl>'+row("Taille et poids",b[5])+row("Habitat",b[6])+row("Alimentation",b[7])+row('Chant',b[8])+x.map(function(v,k){return row(L[k],v)}).join('')+'</dl><div class="fun">💡 '+b[10]+'</div><div class="row"><a class="b" target="_blank" rel="noopener" href="https://commons.wikimedia.org/wiki/Special:MediaSearch?type=image&search='+encodeURIComponent(b[1])+'">Photos</a><a class="b o" target="_blank" rel="noopener" href="https://fr.wikipedia.org/wiki/'+encodeURIComponent(b[1].replace(" ","_"))+'">Wikipédia</a><button class="o" id="prev">← Veille</button><button class="o" id="next">Lendemain →</button></div></div>';
+document.getElementById("prev").onclick=function(){show(cur-1)};
+document.getElementById("next").onclick=function(){if(cur<today())show(cur+1)};
+renderList();window.scrollTo(0,0)}
+function renderList(){
+var n=Object.keys(seen).length;document.getElementById("prog").textContent="Découverts : "+n+" / "+B.length;
+document.getElementById("list").innerHTML=B.map(function(b,i){return '<div class="item" data-i="'+i+'"><span>'+(seen[i]?"✓ ":"· ")+b[0]+(/migrat|passage|hivern/i.test(b[9])?' ✈':'')+'</span><small>'+b[1]+'</small></div>'}).join("");
+[].forEach.call(document.querySelectorAll(".item"),function(el){el.onclick=function(){var i=+el.dataset.i;var d=today();var k=((i-idx(d))%B.length+B.length)%B.length;show(d-(B.length-k)%B.length)}})}
+function shuf(a){return a.slice().sort(function(){return Math.random()-.5})}
+function opts(i,f){var v=B[i][f],o=B.map(function(b){return b[f]}).filter(function(s,k,a){return a.indexOf(s)===k&&s!==v});return shuf(shuf(o).slice(0,3).concat(v))}
+var qs=0,qn=0,qc;
+function mk(){var i=Math.floor(Math.random()*B.length),b=B[i],t=Math.floor(Math.random()*6);var d=[['Quel est le nom latin du « '+b[0]+' » ?',1,b[1]],['Quel oiseau porte le nom latin '+b[1]+' ?',0,b[0]],['Quel oiseau est décrit ainsi : « '+X[i][0]+' »',0,b[0]],['Quel oiseau a ce chant : « '+b[8]+' » ?',0,b[0]],['À quelle famille appartient le '+b[0]+' ?',2,b[2]],['Quel est le statut en Belgique du '+b[0]+' ?',9,b[9]]][t];return {q:d[0],o:opts(i,d[1]),a:d[2]}}
+function startQ(){qs=0;qn=0;nextQ()}
+function nextQ(){var el=document.getElementById('quiz');if(qn>=10){el.innerHTML=`<div class='in'><h2>Score : ${qs} / 10</h2><div class='row'><button id='again'>Rejouer</button></div></div>`;document.getElementById('again').onclick=startQ;return}
+qc=mk();qn++;el.innerHTML=`<div class='in'><b>Question ${qn} / 10</b><p>${qc.q}</p>`+qc.o.map(function(o){return `<button class='opt'>${o}</button>`}).join('')+`<div id='fb'></div></div>`;
+[].forEach.call(el.querySelectorAll('.opt'),function(b){b.onclick=function(){if(qc.done)return;qc.done=1;var ok=b.textContent===qc.a;if(ok)qs++;[].forEach.call(el.querySelectorAll('.opt'),function(e){if(e.textContent===qc.a)e.className='opt ok';else if(e===b)e.className='opt ko'});document.getElementById('fb').innerHTML=(ok?'✅ Bravo !':'❌ Bonne réponse : '+qc.a)+`<div class='row'><button id='nx'>${qn>=10?'Voir le score':'Suivant'}</button></div>`;document.getElementById('nx').onclick=nextQ}})}
+function tab(m){['bird','quiz','cat'].forEach(function(id,k){document.getElementById(id).style.display=k===m?'':'none'});['tb','tq','tc'].forEach(function(id,k){document.getElementById(id).className=k===m?'':'o'});if(m===1)startQ();if(m===2)renderCat()}
+function showIdx(i){var d=today(),k=((i-idx(d))%B.length+B.length)%B.length;show(d-(B.length-k)%B.length)}
+var GR=['Passereaux','Oiseaux d’eau','Échassiers et limicoles','Rapaces diurnes','Rapaces nocturnes','Pics et apparentés','Mouettes, goélands et sternes','Pigeons, coucous et martinets','Gallinacés et râles'];
+var GI=[0,0,0,0,0,0,5,5,2,2,3,3,4,0,7,0,0,0,1,1,2,0,0,0,1,1,7,0,0,0,3,2,1,2,0,0];
+var ST={c:'commun',a:'assez commun',r:'rare',m:'migrateur nicheur',p:'de passage',h:'hivernant',s:'sédentaire'};
+var CA=[`Corneille noire;Corvus corone;cs
+Corbeau freux;Corvus frugilegus;cs
+Choucas des tours;Corvus monedula;cs
+Grand corbeau;Corvus corax;rs
+Alouette des champs;Alauda arvensis;am
+Alouette lulu;Lullula arborea;rm
+Pipit des arbres;Anthus trivialis;am
+Pipit farlouse;Anthus pratensis;ah
+Hirondelle de fenêtre;Delichon urbicum;am
+Hirondelle de rivage;Riparia riparia;am
+Accenteur mouchet;Prunella modularis;cs
+Gobemouche gris;Muscicapa striata;am
+Gobemouche noir;Ficedula hypoleuca;rm
+Rougequeue noir;Phoenicurus ochruros;cs
+Rougequeue à front blanc;Phoenicurus phoenicurus;am
+Tarier pâtre;Saxicola rubicola;as
+Traquet motteux;Oenanthe oenanthe;rp
+Gorgebleue à miroir;Luscinia svecica;rp
+Grive musicienne;Turdus philomelos;cm
+Grive draine;Turdus viscivorus;as
+Grive mauvis;Turdus iliacus;ph
+Merle à plastron;Turdus torquatus;rp
+Mésange nonnette;Poecile palustris;as
+Mésange boréale;Poecile montanus;as
+Mésange huppée;Lophophanes cristatus;as
+Mésange noire;Periparus ater;as
+Mésange à longue queue;Aegithalos caudatus;cs
+Grimpereau des jardins;Certhia brachydactyla;cs
+Rousserolle effarvatte;Acrocephalus scirpaceus;am
+Phragmite des joncs;Acrocephalus schoenobaenus;am
+Locustelle tachetée;Locustella naevia;am
+Fauvette grisette;Curruca communis;am
+Fauvette babillarde;Curruca curruca;rm
+Fauvette des jardins;Sylvia borin;am
+Roitelet huppé;Regulus regulus;cs
+Roitelet triple-bandeau;Regulus ignicapilla;as
+Pie-grièche écorcheur;Lanius collurio;rm
+Loriot d’Europe;Oriolus oriolus;rm
+Verdier d’Europe;Chloris chloris;cs
+Linotte mélodieuse;Linaria cannabina;as
+Tarin des aulnes;Spinus spinus;ah
+Sizerin flammé;Acanthis flammea;rh
+Pinson du Nord;Fringilla montifringilla;ph
+Bec-croisé des sapins;Loxia curvirostra;rs
+Bouvreuil pivoine;Pyrrhula pyrrhula;as
+Gros-bec casse-noyaux;Coccothraustes coccothraustes;as
+Bruant jaune;Emberiza citrinella;as
+Bruant des roseaux;Emberiza schoeniclus;as
+Bruant proyer;Emberiza calandra;rs
+Moineau friquet;Passer montanus;as
+Bergeronnette printanière;Motacilla flava;am
+Bergeronnette des ruisseaux;Motacilla cinerea;as
+Cincle plongeur;Cinclus cinclus;rs`,
+`Cygne chanteur;Cygnus cygnus;rh
+Cygne de Bewick;Cygnus columbianus;rh
+Oie rieuse;Anser albifrons;ph
+Oie des moissons;Anser fabalis;ph
+Bernache nonnette;Branta leucopsis;ph
+Tadorne de Belon;Tadorna tadorna;as
+Canard siffleur;Mareca penelope;ph
+Canard chipeau;Mareca strepera;as
+Sarcelle d’hiver;Anas crecca;ph
+Canard pilet;Anas acuta;ph
+Canard souchet;Spatula clypeata;ph
+Sarcelle d’été;Spatula querquedula;rp
+Fuligule milouin;Aythya ferina;ah
+Fuligule morillon;Aythya fuligula;ah
+Garrot à œil d’or;Bucephala clangula;h
+Harle bièvre;Mergus merganser;h
+Grèbe huppé;Podiceps cristatus;as
+Grèbe castagneux;Tachybaptus ruficollis;as
+Plongeon arctique;Gavia arctica;rh`,
+`Aigrette garzette;Egretta garzetta;rm
+Grande aigrette;Ardea alba;ah
+Spatule blanche;Platalea leucorodia;rp
+Bihoreau gris;Nycticorax nycticorax;rp
+Butor étoilé;Botaurus stellaris;rh
+Avocette élégante;Recurvirostra avosetta;rm
+Huîtrier pie;Haematopus ostralegus;as
+Grand gravelot;Charadrius hiaticula;ph
+Pluvier doré;Pluvialis apricaria;ph
+Bécasseau variable;Calidris alpina;ph
+Chevalier gambette;Tringa totanus;pm
+Courlis cendré;Numenius arquata;ph
+Barge à queue noire;Limosa limosa;pm
+Bécassine des marais;Gallinago gallinago;ph
+Bécasse des bois;Scolopax rusticola;ph
+Combattant varié;Calidris pugnax;p
+Chevalier guignette;Actitis hypoleucos;pm`,
+`Milan royal;Milvus milvus;rm
+Milan noir;Milvus migrans;rm
+Busard des roseaux;Circus aeruginosus;rm
+Busard Saint-Martin;Circus cyaneus;rh
+Épervier d’Europe;Accipiter nisus;as
+Autour des palombes;Accipiter gentilis;rs
+Faucon pèlerin;Falco peregrinus;rs
+Faucon hobereau;Falco subbuteo;rm
+Balbuzard pêcheur;Pandion haliaetus;rp
+Pygargue à queue blanche;Haliaeetus albicilla;rh`,
+`Effraie des clochers;Tyto alba;as
+Chevêche d’Athéna;Athene noctua;as
+Hibou moyen-duc;Asio otus;as
+Hibou des marais;Asio flammeus;rh
+Chouette de Tengmalm;Aegolius funereus;rs`,
+`Pic vert;Picus viridis;cs
+Pic noir;Dryocopus martius;as
+Pic mar;Dendrocoptes medius;as
+Pic épeichette;Dryobates minor;rs
+Torcol fourmilier;Jynx torquilla;rp
+Huppe fasciée;Upupa epops;rp`,
+`Mouette rieuse;Chroicocephalus ridibundus;c
+Goéland argenté;Larus argentatus;c
+Goéland brun;Larus fuscus;c
+Goéland cendré;Larus canus;ah
+Mouette tridactyle;Rissa tridactyla;ph
+Sterne pierregarin;Sterna hirundo;am
+Sterne caugek;Thalasseus sandvicensis;pm
+Guifette noire;Chlidonias niger;p`,
+`Pigeon ramier;Columba palumbus;cs
+Pigeon colombin;Columba oenas;as
+Tourterelle turque;Streptopelia decaocto;cs
+Tourterelle des bois;Streptopelia turtur;rm
+Engoulevent d’Europe;Caprimulgus europaeus;rm`,
+`Faisan de Colchide;Phasianus colchicus;cs
+Perdrix grise;Perdix perdix;rs
+Caille des blés;Coturnix coturnix;rm
+Poule d’eau;Gallinula chloropus;cs
+Foulque macroule;Fulica atra;cs
+Râle d’eau;Rallus aquaticus;as
+Râle des genêts;Crex crex;rm`];
+function renderCat(){var el=document.getElementById('cat'),tot=B.length+CA.reduce(function(n,s){return n+s.split('\n').length},0);var h=`<div class='in'><b>${tot} espèces au catalogue</b><br><small>${B.length} fiches complètes (★, touchez pour ouvrir) · les autres sont en liste avec lien Wikipédia</small></div>`;GR.forEach(function(g,k){var full=B.map(function(b,i){return GI[i]===k?`<div class='sp' data-i='${i}'><span>★ ${b[0]} <small>${b[1]}</small></span><small>fiche</small></div>`:''}).join('');var rows=CA[k].split('\n').map(function(r){var p=r.split(';');return `<div class='sp'><span><a href='https://fr.wikipedia.org/wiki/${encodeURIComponent(p[1].replace(' ','_'))}' target='_blank' rel='noopener'>${p[0]}</a> <small>${p[1]}</small></span><small>${p[2].split('').map(function(c){return ST[c]}).join(', ')}</small></div>`}).join('');h+=`<div class='grp'>${g}</div>`+full+rows});el.innerHTML=h;[].forEach.call(el.querySelectorAll('[data-i]'),function(e){e.onclick=function(){showIdx(+e.dataset.i)}})}
+document.getElementById('tb').onclick=function(){tab(0)};document.getElementById('tq').onclick=function(){tab(1)};document.getElementById('tc').onclick=function(){tab(2)};
+show(today());
+</script>
+</body>
+</html>
